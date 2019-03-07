@@ -1,7 +1,7 @@
 !include "MUI2.nsh"
 
 Name "GNU Emacs"
-Outfile "emacs-${VERSION}-installer-i386.exe"
+Outfile "emacs-${VERSION}-installer-${ARCH}.exe"
 XPStyle on
 
 !insertmacro MUI_PAGE_WELCOME

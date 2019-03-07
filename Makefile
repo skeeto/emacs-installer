@@ -1,17 +1,21 @@
-VERSION = 24.3
-FETCH_URL = http://ftp.gnu.org/gnu/emacs/windows
+.POSIX:
+ARCH      = x86_64
+MAJOR     = 26
+MINOR     = 1
+VERSION   = $(MAJOR).$(MINOR)
+FETCH_URL = https://ftp.gnu.org/gnu/emacs/windows/emacs-$(MAJOR)
 
-emacs-$(VERSION)-installer-i386.exe : emacs-$(VERSION)-bin-i386.zip
-	unzip -o $^
-	makensis -DVERSION=$(VERSION) emacs.nsi
+emacs-$(VERSION)-installer-$(ARCH).exe: emacs-$(VERSION)/ emacs.nsi
+	makensis -DVERSION=$(VERSION) -DARCH=$(ARCH) emacs.nsi
 
-emacs-$(VERSION)-bin-i386.zip :
-	curl -O $(FETCH_URL)/emacs-$(VERSION)-bin-i386.zip
+emacs-$(VERSION)/: emacs-$(VERSION)-$(ARCH).zip
+	unzip -o -d $@ emacs-$(VERSION)-$(ARCH).zip
 
-.PHONY : clean dist-clean
+emacs-$(VERSION)-$(ARCH).zip:
+	curl -LO $(FETCH_URL)/emacs-$(VERSION)-$(ARCH).zip
 
-clean :
-	rm -rf emacs-24.3 *.exe
+clean:
+	rm -rf emacs-$(VERSION) emacs-$(VERSION)-installer-$(ARCH).exe
 
-dist-clean : clean
-	rm *.zip
+distclean: clean
+	rm -f emacs-$(VERSION)-$(ARCH).zip
